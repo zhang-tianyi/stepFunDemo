@@ -20,7 +20,7 @@ def image_to_base64(image_path):
 COMPLETION_MODEL = "step-1x-medium"
 
 
-image_path1 = "../img/food/菜肴03.jpeg"
+image_path1 = "../img/qyl.png"
 
 bstring1 = image_to_base64(image_path1)
 base64_image = f"data:image/jpeg;base64,{bstring1}"
@@ -28,7 +28,7 @@ base64_image = f"data:image/jpeg;base64,{bstring1}"
 url = f'{BASE_URL}/images/generations'
 params = {
         "model":"step-1x-medium",
-        "prompt":"在蔬菜和米饭上放点葱花",
+        "prompt":"帮我基于图像生成一个卡通可爱版，预祝妇女节快乐的图像",
         "style_reference": {
              "source_url": base64_image,
              "weight":2
