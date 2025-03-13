@@ -52,7 +52,8 @@ def send_create(ws):
             "response_format": "mp3",  # 可选：wav、mp3、flac、opus
             "volumn_ratio": 1.0,  # 音量比例：0.1~2.0
             "speed_ratio": 1.0,  # 语速比例：0.5~2.0
-            "sample_rate": 16000  # 采样率：8000~96000
+            "sample_rate": 16000,  # 采样率：8000~96000
+            "mode":"sentence"
         }
     }
     ws.send(json.dumps(create_msg))
@@ -166,12 +167,9 @@ def on_message(ws, message):
                     chunk_index += 1
         elif msg_type == "tts.response.audio.done":
             print("音频生成完成，开始合并所有片段生成完整音频")
-            # 如果服务端返回完整的音频文件，可以直接保存；否则用所有片段合成
             full_audio_b64 = resp.get("data", {}).get("audio")
             if full_audio_b64:
-                # 如果有完整音频数据，先保存备用
                 save_audio(full_audio_b64)
-            # 合并所有保存的片段
             if audio_chunk_files:
                 merge_audio_chunks(audio_chunk_files)
             else:
@@ -184,6 +182,7 @@ def on_message(ws, message):
         print("解析消息出错:", e)
 
 def on_error(ws, error):
+    # 过滤正常关闭的错误信息
     if "Connection to remote host was lost" in str(error):
         return
     print("WebSocket 错误:", error)

@@ -19,7 +19,7 @@ def read_config():
 STEP_API_KEY,BASE_URL = read_config()
 
 # 初始化OpenAI客户端
-client = OpenAI(api_key=api_key, base_url=api_url)
+client = OpenAI(api_key=STEP_API_KEY, base_url=BASE_URL)
 
 
 def get_image_size(image_path):
