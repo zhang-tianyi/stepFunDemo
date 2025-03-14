@@ -95,7 +95,7 @@ def analyze_image(image_path, image_size):
     try:
         response = client.chat.completions.create(
             messages=messages,
-            model="step-1v-8k",  # 替换为你实际使用的模型
+            model="step-1o-turbo-vision",  # 替换为你实际使用的模型
             response_format={"type": "json_object"},
         )
     except Exception as e:
