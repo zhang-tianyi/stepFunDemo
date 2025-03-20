@@ -64,7 +64,7 @@ if __name__ == "__main__":
 
     # 设置请求参数
     model = "step-tts-mini"
-    input_text = "你好"
+    input_text = "你好，习近平"
     voice = "linjiameimei"
     output_file = "output/测试音频.mp3"
 

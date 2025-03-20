@@ -45,7 +45,8 @@ def video_to_base64(video_path):
     return encoded_string.decode('utf-8')
 
 # 注意：请将 video_path1 修改为你本地视频的正确路径，文件格式建议为 mp4
-video_path1 = "video/video.mp4"
+# video_path1 = "video/video.mp4"
+video_path1 = "video/飞书20250319-194119.mp4"
 bstring1 = video_to_base64(video_path1)
 
 # 构造消息列表，此处将上传的视频使用 video_url，并指定对应的 MIME 类型

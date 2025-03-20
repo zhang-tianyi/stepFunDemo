@@ -42,29 +42,29 @@ def image_to_base64(image_path):
         encoded_string = base64.b64encode(image_file.read())
     return encoded_string.decode('utf-8')
 #
-# image_path1 = "img/图1.jpg"
-# image_path2 = "img/图2.jpg"
-image_path3 = "img/图3.png"
-image_path4 = "img/图4.jpg"
-image_path5 = "img/图表1.jpg"
-image_path6 = "img/病例.jpg"
+image_path1 = "img/图1.jpg"
+image_path2 = "img/图2.jpg"
+# image_path3 = "img/图3.png"
+# image_path4 = "img/图4.jpg"
+# image_path5 = "img/图表1.jpg"
+# image_path6 = "img/病例.jpg"
 
-# bstring1 = image_to_base64(image_path1)
-# bstring2 = image_to_base64(image_path2)
-bstring3 = image_to_base64(image_path3)
-bstring4 = image_to_base64(image_path4)
-bstring5 = image_to_base64(image_path5)
-bstring6 = image_to_base64(image_path6)
+bstring1 = image_to_base64(image_path1)
+bstring2 = image_to_base64(image_path2)
+# bstring3 = image_to_base64(image_path3)
+# bstring4 = image_to_base64(image_path4)
+# bstring5 = image_to_base64(image_path5)
+# bstring6 = image_to_base64(image_path6)
 
 messages = [
           # {"role": "system", "content": sys_prompt},
           {"role": "user", "content":
               [
-                  # {"type": "image_url", "image_url": {"url": "data:image/jpg;base64,%s" % (bstring1)}},
-                  # {"type": "image_url", "image_url": {"url": "data:image/jpg;base64,%s" % (bstring2)}},
+                  {"type": "image_url", "image_url": {"url": "data:image/jpg;base64,%s" % (bstring1)}},
+                  {"type": "image_url", "image_url": {"url": "data:image/jpg;base64,%s" % (bstring2)}},
                   # {"type": "image_url", "image_url": {"url": "data:image/png;base64,%s" % (bstring3)}},
                   # {"type": "image_url", "image_url": {"url": "data:image/jpg;base64,%s" % (bstring4)}},
-                  {"type": "image_url", "image_url": {"url": "data:image/jpg;base64,%s" % (bstring5),"detail": "high"}},
+                  # {"type": "image_url", "image_url": {"url": "data:image/jpg;base64,%s" % (bstring5),"detail": "high"}},
                   # {"type": "image_url", "image_url": {"url": "data:image/jpg;base64,%s" % (bstring6),"detail": "high"}},
                   # {"type": "text", "text": "请解析图片里包含的信息，包含文字和风格类型等。"}
                   {"type": "text", "text": user_prompt}
