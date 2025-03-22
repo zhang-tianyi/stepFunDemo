@@ -22,16 +22,36 @@ client = OpenAI(api_key=STEP_API_KEY,base_url=BASE_URL)
 #COMPLETION_MODEL = "step-1-32k"
 #COMPLETION_MODEL = "step-1-128k"
 #COMPLETION_MODEL = "step-1-256k"
-COMPLETION_MODEL = "step-1v-8k"
+# COMPLETION_MODEL = "step-1o-vision-32k"
+COMPLETION_MODEL = "step-1o-turbo-vision"
 #COMPLETION_MODEL = "step-1v-32k"
 #COMPLETION_MODEL = "step-2-16k-nightly"
 #COMPLETION_MODEL = "step-1x-medium"
 
-sys_prompt = """你是由阶跃星辰提供的AI图像分析师，善于图片分析，可以分析图片中的文字，地址，建筑，人物，动物，食物，植物等结构清晰的物品。
-"""
+# sys_prompt = """你是由阶跃星辰提供的AI图像分析师，善于图片分析，可以分析图片中的文字，地址，建筑，人物，动物，食物，植物等结构清晰的物品。
+# """
+sys_prompt = """此问题都是基于店铺巡查监测，需要你分析图片，并给出详细数据；
+请将所有结果都以 js 数组格式输出；
+如果结果不合格，请给出 不超过50字的点评，并给出理由；
+具体输出格式 的 typescript interface 是：
+interface Data {
+  "name": string; // "检测名-1",
+  "success": boolean;
+  "message": string;
+}
+注意直接给出数组，不要其他额外数据结构"""
 user_prompt = """
-请从下面pdf中提取用户的First Name和Last name, Filing Status, digital asset，
-Income 1h, Income 1a, Income 1z, Income 8, Income 9, Income 10, Income 11, Income 12, Income 14, Refund 35a, Firms EIN, Preparer's name
+检测名-18：员工玩手机检测
+检测内容：你是一个智能店铺巡检系统，分析监控摄像头的图像画面，理解画面中的场景，判断画面中是否有员工存在以及每位员工是否存在违规使用手机的现象：
+人物区分：注意区分画面的人物身份（员工、外卖员（多为黄色或蓝色工装）、顾客）。
+当判断员工存在时，执行以下操作：
+1. 手持设备检测：识别员工手部区域是否持有智能手机（需排除对讲机、扫码枪等工作设备），观察设备屏幕是否处于亮屏状态；
+2. 视觉注意力分析：检测员工是否低头注视手部区域；
+3. 动作模式识别：判断是否存在单手/双手握持姿势，以及手指滑动、点击等典型触屏操作特征；
+使用场景验证：排除合理使用场景（如扫描商品条码、接听工作电话、查看订单信息等），重点监测社交/娱乐行为（视频播放、游戏界面等）；
+4. 干扰项排除：区分类似动作（手持笔记录、操作收银键盘、整理票据等），通过设备边缘反光特征、握持角度进行二次校验；
+Take a deep breath and work on this problem step-by-step
+检测标准：输出二分类结论（合规/不合规）及违规类型； 若检测到员工玩手机则判定为“不合规”；若检测到员工未在场则判定为“合规”，并输出结果为“未有效检测”
 """
 
 #user_prompt = "你好，请介绍一下阶跃星辰的人工智能！"
@@ -42,26 +62,26 @@ def image_to_base64(image_path):
         encoded_string = base64.b64encode(image_file.read())
     return encoded_string.decode('utf-8')
 #
-image_path1 = "img/图1.jpg"
-image_path2 = "img/图2.jpg"
+image_path1 = "img/10-3.jpg"
+# image_path2 = "img/图2.jpg"
 # image_path3 = "img/图3.png"
 # image_path4 = "img/图4.jpg"
 # image_path5 = "img/图表1.jpg"
 # image_path6 = "img/病例.jpg"
 
 bstring1 = image_to_base64(image_path1)
-bstring2 = image_to_base64(image_path2)
+# bstring2 = image_to_base64(image_path2)
 # bstring3 = image_to_base64(image_path3)
 # bstring4 = image_to_base64(image_path4)
 # bstring5 = image_to_base64(image_path5)
 # bstring6 = image_to_base64(image_path6)
 
 messages = [
-          # {"role": "system", "content": sys_prompt},
+          {"role": "system", "content": sys_prompt},
           {"role": "user", "content":
               [
-                  {"type": "image_url", "image_url": {"url": "data:image/jpg;base64,%s" % (bstring1)}},
-                  {"type": "image_url", "image_url": {"url": "data:image/jpg;base64,%s" % (bstring2)}},
+                  {"type": "image_url", "image_url": {"url": "data:image/jpg;base64,%s" % (bstring1),"detail": "high"}},
+                  # {"type": "image_url", "image_url": {"url": "data:image/jpg;base64,%s" % (bstring2)}},
                   # {"type": "image_url", "image_url": {"url": "data:image/png;base64,%s" % (bstring3)}},
                   # {"type": "image_url", "image_url": {"url": "data:image/jpg;base64,%s" % (bstring4)}},
                   # {"type": "image_url", "image_url": {"url": "data:image/jpg;base64,%s" % (bstring5),"detail": "high"}},

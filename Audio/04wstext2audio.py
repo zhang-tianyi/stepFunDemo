@@ -28,9 +28,9 @@ STEP_API_KEY, WS_BASE_URL = read_config()
 # 全局参数配置
 # ---------------------------
 session_id = ""
-# voice_id = "linjiameimei"  # 替换为实际的音色 ID
+voice_id = "linjiameimei"  # 替换为实际的音色 ID
 
-voice_id = "voice-tone-Eog0tIPGwy"# 克隆的音色
+# voice_id = "voice-tone-Eog0tIPGwy"# 克隆的音色
 auth_token = STEP_API_KEY  # 鉴权 TOKEN
 
 ws_url = WS_BASE_URL + "/realtime/audio?model=step-tts-mini"
