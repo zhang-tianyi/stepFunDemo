@@ -28,9 +28,9 @@ STEP_API_KEY, WS_BASE_URL = read_config()
 # 全局参数配置
 # ---------------------------
 session_id = ""
-voice_id = "linjiameimei"  # 替换为实际的音色 ID
+# voice_id = "linjiameimei"  # 替换为实际的音色 ID
 
-# voice_id = "voice-tone-Eog0tIPGwy"# 克隆的音色
+voice_id = "voice-tone-Eog0tIPGwy"# 克隆的音色
 auth_token = STEP_API_KEY  # 鉴权 TOKEN
 
 ws_url = WS_BASE_URL + "/realtime/audio?model=step-tts-mini"
@@ -89,7 +89,6 @@ def send_text(ws):
     # 记录发送文本开始的时间，即 tts.text.delta 消息发送的时间
     text_start_time = time.time()
     logging.info("发送 tts.text.delta 消息（使用 session_id）：%s", session_id)
-    time.sleep(1)
     text_done_msg = {
         "type": "tts.text.done",
         "data": {
@@ -142,11 +141,16 @@ def on_message(ws, message):
     try:
         resp = json.loads(message)
         msg_type = resp.get("type")
-        # 对于音频消息将 audio 数据替换为占位符打印
+        # 针对音频消息，打印出 base64 字符串的前50字符
         if msg_type in ["tts.response.audio.delta", "tts.response.audio.done"]:
+            audio_b64 = resp.get("data", {}).get("audio", "")
+            if audio_b64:
+                preview = audio_b64[:50]
+                logging.info("接收到音频流的前50字符: %s", preview)
+            # 如果仍希望替换日志中的音频数据为预览内容
             temp_resp = dict(resp)
             if "data" in temp_resp and "audio" in temp_resp["data"]:
-                temp_resp["data"]["audio"] = "[BASE64 DATA]"
+                temp_resp["data"]["audio"] = audio_b64[:50] + "..."
             logging.info("接收到消息: %s", json.dumps(temp_resp, ensure_ascii=False))
         else:
             logging.info("接收到消息: %s", message)

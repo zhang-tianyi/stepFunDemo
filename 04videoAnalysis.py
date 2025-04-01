@@ -67,6 +67,15 @@ response = client.chat.completions.create(
     stream=True
 )
 
+# 输出返回的 header 信息
+if hasattr(response, "headers"):
+    headers = response.headers
+    print("Response Headers:", headers)
+    logging.info("Response Headers: %s", headers)
+else:
+    print("No header information available.")
+    logging.info("No header information available.")
+
 i = 0
 for chunk in response:
     i += 1
