@@ -5,9 +5,11 @@ import configparser
 def read_config():
     config = configparser.ConfigParser()
     config.read('../config.ini')
-    # 读取API配置/测试环境将step_api_prod换成step_api_test即可
-    api_key = config.get('step_api_prod', 'key')
-    api_url = config.get('step_api_prod', 'url')
+    # # 读取API配置/测试环境将step_api_prod换成step_api_test即可
+    # api_key = config.get('step_api_prod', 'key')
+    # api_url = config.get('step_api_prod', 'url')
+    api_key = config.get('step_api_test', 'key')
+    api_url = config.get('step_api_test', 'url')
     return api_key, api_url
 
 
@@ -63,8 +65,9 @@ if __name__ == "__main__":
         raise ValueError("请设置环境变量 STEP_API_KEY")
 
     # 设置请求参数
+    # model = "step-tts-mini"
     model = "step-tts-mini"
-    input_text = "你好，习近平"
+    input_text = "你好，啦啦啦"
     voice = "linjiameimei"
     output_file = "output/测试音频.mp3"
 

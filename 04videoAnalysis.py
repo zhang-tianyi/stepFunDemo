@@ -14,8 +14,8 @@ def read_config():
     config = configparser.ConfigParser()
     config.read('config.ini')
     # 读取API配置，测试环境将step_api_prod换成step_api_test即可
-    api_key = config.get('step_api_prod', 'key')
-    api_url = config.get('step_api_prod', 'url')
+    api_key = config.get('step_api_test', 'key')
+    api_url = config.get('step_api_test', 'url')
     logging.info("Configuration loaded: API URL is %s", api_url)
     return api_key, api_url
 
@@ -26,7 +26,7 @@ client = OpenAI(api_key=STEP_API_KEY, base_url=BASE_URL)
 logging.info("Initialized OpenAI client")
 
 # 选择模型（这里选择的是 step-1.5v-mini，可根据需要更换）
-COMPLETION_MODEL = "step-1.5v-mini"
+COMPLETION_MODEL = "step-1o-turbo-vision"
 logging.info("Using model: %s", COMPLETION_MODEL)
 
 # 系统提示，描述视频分析的角色
@@ -46,7 +46,7 @@ def video_to_base64(video_path):
 
 # 注意：请将 video_path1 修改为你本地视频的正确路径，文件格式建议为 mp4
 # video_path1 = "video/video.mp4"
-video_path1 = "video/飞书20250319-194119.mp4"
+video_path1 = "video/preview.mp4"
 bstring1 = video_to_base64(video_path1)
 
 # 构造消息列表，此处将上传的视频使用 video_url，并指定对应的 MIME 类型
