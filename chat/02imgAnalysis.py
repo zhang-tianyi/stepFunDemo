@@ -29,14 +29,15 @@ COMPLETION_MODEL = "step-1o-turbo-vision"
 #COMPLETION_MODEL = "step-2-16k-nightly"
 #COMPLETION_MODEL = "step-1x-medium"
 
-# sys_prompt = """你是由阶跃星辰提供的AI图像分析师，善于图片分析，可以分析图片中的文字，地址，建筑，人物，动物，食物，植物等结构清晰的物品。
-# """
-sys_prompt = """
-
+sys_prompt = """你是由阶跃星辰提供的AI图像分析师，善于图片分析，可以分析图片中的文字，地址，建筑，人物，动物，食物，植物等结构清晰的物品。
 """
+# sys_prompt = """
+#
+# """
 
 user_prompt = """
-please detect the following items in images, and follow the exact example json format: ["item1", "item2"] Abalone Fish Prawn / Shrimp Crab Dried Scallop Scallop Oyster Calm Sea Cucumber Fish Maw Mussel Squid / Cuttlefish Lobster Pork Beef Lamb Chicken Duck Chicken Wings Pock Chop Ribs Vegetable Shiitake Mushroom Carrot Chilli Corn Broccoli Mushroom Tomato Pumpkin Lettuce Eggplant Potato Cucumber Avocado Bell Pepper White Radish Onion Sweet Potato White Gourd Asparagus Enokitake Spinach Lotus Root Zucchini Celery Noodles Rice Bread Vermicelli Rice Cake Tofu Egg Garlic Lemon"""
+你看到看到了几张图，分别是什么内容
+"""
 
 #######读取本地图片文件，并转换为base64编码########
 def image_to_base64(image_path):
@@ -44,16 +45,16 @@ def image_to_base64(image_path):
         encoded_string = base64.b64encode(image_file.read())
     return encoded_string.decode('utf-8')
 #
-image_path1 = "../img/水果.jpeg"
-# image_path2 = "img/图2.jpg"
-# image_path3 = "img/图3.png"
+image_path1 = "../img/图1.jpg"
+image_path2 = "../img/图2.jpg"
+image_path3 = "../img/图3.png"
 # image_path4 = "img/图4.jpg"
 # image_path5 = "img/图表1.jpg"
 # image_path6 = "img/病例.jpg"
 
 bstring1 = image_to_base64(image_path1)
-# bstring2 = image_to_base64(image_path2)
-# bstring3 = image_to_base64(image_path3)
+bstring2 = image_to_base64(image_path2)
+bstring3 = image_to_base64(image_path3)
 # bstring4 = image_to_base64(image_path4)
 # bstring5 = image_to_base64(image_path5)
 # bstring6 = image_to_base64(image_path6)
@@ -63,8 +64,8 @@ messages = [
           {"role": "user", "content":
               [
                   {"type": "image_url", "image_url": {"url": "data:image/jpg;base64,%s" % (bstring1),"detail": "high"}},
-                  # {"type": "image_url", "image_url": {"url": "data:image/jpg;base64,%s" % (bstring2)}},
-                  # {"type": "image_url", "image_url": {"url": "data:image/png;base64,%s" % (bstring3)}},
+                  {"type": "image_url", "image_url": {"url": "data:image/jpg;base64,%s" % (bstring2)}},
+                  {"type": "image_url", "image_url": {"url": "data:image/png;base64,%s" % (bstring3)}},
                   # {"type": "image_url", "image_url": {"url": "data:image/jpg;base64,%s" % (bstring4)}},
                   # {"type": "image_url", "image_url": {"url": "data:image/jpg;base64,%s" % (bstring5),"detail": "high"}},
                   # {"type": "image_url", "image_url": {"url": "data:image/jpg;base64,%s" % (bstring6),"detail": "high"}},

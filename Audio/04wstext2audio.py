@@ -28,25 +28,17 @@ STEP_API_KEY, WS_BASE_URL = read_config()
 # 全局参数配置
 # ---------------------------
 session_id = ""
-# voice_id = "linjiameimei"  # 替换为实际的音色 ID
-
-voice_id = "voice-tone-Eog0tIPGwy"# 克隆的音色
-auth_token = STEP_API_KEY  # 鉴权 TOKEN
-
+voice_id = "voice-tone-Eog0tIPGwy"  # 克隆的音色
+auth_token = STEP_API_KEY
 ws_url = WS_BASE_URL + "/realtime/audio?model=step-tts-mini"
 
-# 用于存储返回的 base64 音频数据（备用）
 audio_chunks = []
-# 用于存储每个片段的文件路径
 audio_chunk_files = []
-# 音频片段计数
 chunk_index = 1
 
-# 记录发送文本开始时间和上次收到音频片段的时间
 text_start_time = None
 last_audio_time = None
 
-# 确保输出目录存在
 output_dir = "./output"
 if not os.path.exists(output_dir):
     os.makedirs(output_dir)
@@ -58,9 +50,9 @@ def send_create(ws):
     create_msg = {
         "type": "tts.create",
         "data": {
-            "session_id": session_id,  # 使用服务器返回的有效 session_id
+            "session_id": session_id,
             "voice_id": voice_id,
-            "response_format": "mp3",  # 可选：wav、mp3、flac、opus
+            "response_format": "mp3",
             "volumn_ratio": 1.0,
             "speed_ratio": 1.0,
             "sample_rate": 16000,
@@ -71,7 +63,7 @@ def send_create(ws):
     logging.info("发送 tts.create 消息（使用更新后的 session_id）：%s", session_id)
 
 # ---------------------------
-# 辅助函数：发送文本消息（包括 tts.text.delta 和 tts.text.done）
+# 辅助函数：发送文本消息（仅 tts.text.delta）
 # ---------------------------
 text_sent = False
 def send_text(ws):
@@ -82,21 +74,14 @@ def send_text(ws):
         "type": "tts.text.delta",
         "data": {
             "session_id": session_id,
-            "text": "你好，这是一个测试文本，用于生成语音。"
+            "text":"根据一个日本注意!简介为什具有可能;文化程序是否如何影响新闻' 能够自己原因关于注\ 一定重要能力网上资料您的应用新闻~` 一般作为重要发布很多!图片能够合作发表网络信息感觉出现怎么活动已经怎么|中文最后没有其中自己而且. 行业应用情况图片. 他们空间功能浏览具有时间. 留言教育帖子完成网络支持需要. 组织关于科技精华. 网上可能上海搜索. 这里各种发展还有认为. 密码类别情况作者. 研究广告怎么认为部门销售. 文化工作业务日本拥有更多空间显示. 到了这种学校一切."
+            # "text": "我在测试新的语音合成，这是我3新建的一个模板，我在这个开场白里面测试，我继续测试，今天是二零二五年五月十三号，我这边写这么长的文字是用来凑字数的，因为太长了，所以要多打点字，是现实想不出多少字了，需要二百左右个字，我这边随便编一下，多写一点，多写一点字数应该就够长了吧，这样好像还不够，我这边再多写一点，写长一点。"
         }
     }
     ws.send(json.dumps(text_msg))
-    # 记录发送文本开始的时间，即 tts.text.delta 消息发送的时间
     text_start_time = time.time()
     logging.info("发送 tts.text.delta 消息（使用 session_id）：%s", session_id)
-    text_done_msg = {
-        "type": "tts.text.done",
-        "data": {
-            "session_id": session_id
-        }
-    }
-    ws.send(json.dumps(text_done_msg))
-    logging.info("发送 tts.text.done 消息（使用 session_id）：%s", session_id)
+
     text_sent = True
     logging.info("文本开始发送时间戳: %.3f", text_start_time)
 
@@ -141,62 +126,47 @@ def on_message(ws, message):
     try:
         resp = json.loads(message)
         msg_type = resp.get("type")
-        # 针对音频消息，打印出 base64 字符串的前50字符
-        if msg_type in ["tts.response.audio.delta", "tts.response.audio.done"]:
+        # 打印日志
+        if msg_type in ["tts.response.audio.delta"]:
             audio_b64 = resp.get("data", {}).get("audio", "")
-            if audio_b64:
-                preview = audio_b64[:50]
-                logging.info("接收到音频流的前50字符: %s", preview)
-            # 如果仍希望替换日志中的音频数据为预览内容
-            temp_resp = dict(resp)
-            if "data" in temp_resp and "audio" in temp_resp["data"]:
-                temp_resp["data"]["audio"] = audio_b64[:50] + "..."
-            logging.info("接收到消息: %s", json.dumps(temp_resp, ensure_ascii=False))
+            preview = audio_b64[:50] if audio_b64 else ""
+            logging.info("接收到音频流的前50字符: %s", preview)
         else:
             logging.info("接收到消息: %s", message)
 
         if msg_type == "tts.connection.done":
-            logging.info("建联成功: %s", resp)
             new_session_id = resp.get("data", {}).get("session_id")
             if new_session_id:
-                logging.info("服务器返回新 session_id：%s", new_session_id)
                 session_id = new_session_id
                 send_create(ws)
             else:
                 logging.error("未能获取新的 session_id")
         elif msg_type == "tts.response.created":
-            logging.info("会话创建成功: %s", resp)
             send_text(ws)
         elif msg_type == "tts.response.audio.delta":
+            # 统计接收间隔
             current_time = time.time()
-            if last_audio_time is None:
-                if text_start_time is not None:
-                    interval = current_time - text_start_time
-                    logging.info("从发送文本到接收第一个音频的间隔: %.3f 秒", interval)
-                else:
-                    logging.warning("未记录文本发送开始时间")
-            else:
-                interval = current_time - last_audio_time
-                logging.info("连续收到音频片段之间的间隔: %.3f 秒", interval)
+            if last_audio_time is None and text_start_time is not None:
+                logging.info("从发送文本到接收第一个音频的间隔: %.3f 秒", current_time - text_start_time)
+            elif last_audio_time is not None:
+                logging.info("连续收到音频片段之间的间隔: %.3f 秒", current_time - last_audio_time)
             last_audio_time = current_time
 
-            original_resp = json.loads(message)
+            # 保存片段
+            original_resp = resp
             audio_b64 = original_resp.get("data", {}).get("audio")
+            status = original_resp.get("data", {}).get("status")
             if audio_b64:
                 audio_chunks.append(audio_b64)
                 chunk_file = save_chunk_audio(audio_b64, chunk_index)
                 if chunk_file:
                     audio_chunk_files.append(chunk_file)
                 chunk_index += 1
-        elif msg_type == "tts.response.audio.done":
-            logging.info("音频生成完成，开始合并所有片段生成完整音频")
-            full_audio_b64 = resp.get("data", {}).get("audio")
-            if full_audio_b64:
-                save_audio(full_audio_b64)
-            if audio_chunk_files:
+
+            # 若检测到 status 为 finished，则合并所有片段
+            if status == "finished":
+                logging.info("检测到 status finished，开始合并所有片段生成完整音频")
                 merge_audio_chunks(audio_chunk_files)
-            else:
-                logging.error("未检测到保存的音频片段，无法合并")
         elif msg_type == "tts.response.error":
             logging.error("服务端返回错误: %s", resp)
         else:
@@ -204,6 +174,9 @@ def on_message(ws, message):
     except Exception as e:
         logging.error("解析消息出错: %s", e)
 
+# ---------------------------
+# 错误与关闭回调
+# ---------------------------
 def on_error(ws, error):
     if "Connection to remote host was lost" in str(error):
         return
@@ -214,33 +187,18 @@ def on_close(ws, close_status_code, close_msg):
 
 def on_open(ws):
     logging.info("WebSocket 连接已打开")
-    # 等待服务器返回 tts.connection.done 消息
-
-# ---------------------------
-# 辅助函数：保存完整音频文件（备用）
-# ---------------------------
-def save_audio(audio_b64):
-    try:
-        missing_padding = len(audio_b64) % 4
-        if missing_padding:
-            audio_b64 += '=' * (4 - missing_padding)
-        audio_data = base64.b64decode(audio_b64)
-        output_filename = os.path.join(output_dir, "output_audio.mp3")
-        with open(output_filename, "wb") as f:
-            f.write(audio_data)
-        logging.info("完整音频已保存到 %s", output_filename)
-    except Exception as e:
-        logging.error("保存完整音频出错: %s", e)
 
 # ---------------------------
 # 主入口：启动 WebSocket 客户端
 # ---------------------------
 if __name__ == "__main__":
     headers = [f"authorization: {auth_token}"]
-    ws_app = websocket.WebSocketApp(ws_url,
-                                    header=headers,
-                                    on_open=on_open,
-                                    on_message=on_message,
-                                    on_error=on_error,
-                                    on_close=on_close)
+    ws_app = websocket.WebSocketApp(
+        ws_url,
+        header=headers,
+        on_open=on_open,
+        on_message=on_message,
+        on_error=on_error,
+        on_close=on_close
+    )
     ws_app.run_forever()

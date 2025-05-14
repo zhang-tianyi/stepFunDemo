@@ -49,7 +49,7 @@ STEP_API_KEY, BASE_URL = read_config()
 COMPLETION_MODEL = "step-r1-v-mini"
 
 # 用户问题提示
-user_prompt = "帮我看看这是什么菜，如何制作？"
+user_prompt = "帮我看看这是哪里？"
 
 
 # 将本地图片转换为 base64 字符串
@@ -59,7 +59,7 @@ def image_to_base64(image_path):
     return encoded_string.decode('utf-8')
 
 
-image_path1 = "../img/宫保鸡丁.png"
+image_path1 = "../img/图1.jpg"
 bstring1 = image_to_base64(image_path1)
 
 # 构造消息，依靠模型自主深度思考

@@ -7,8 +7,8 @@ def read_config():
     config = configparser.ConfigParser()
     config.read('config.ini')
     # 读取API配置/测试环境将step_api_prod换成step_api_test即可
-    api_key = config.get('step_api_prod', 'key')
-    api_url = config.get('step_api_prod', 'url')
+    api_key = config.get('step_api_test', 'key')
+    api_url = config.get('step_api_test', 'url')
     return api_key,api_url
 STEP_API_KEY,BASE_URL = read_config()
 
@@ -16,7 +16,7 @@ STEP_API_KEY,BASE_URL = read_config()
 client = OpenAI(api_key=STEP_API_KEY,base_url=BASE_URL)
 # 必填-选择模型
 #COMPLETION_MODEL = "step-1-flash"
-COMPLETION_MODEL = "step-1-8k"
+COMPLETION_MODEL = "step-sys-1"
 #COMPLETION_MODEL = "step-1-32k"
 #COMPLETION_MODEL = "step-1-128k"
 #COMPLETION_MODEL = "step-1-256k"
