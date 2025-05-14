@@ -24,7 +24,7 @@ client = OpenAI(api_key=STEP_API_KEY,base_url=BASE_URL)
 #COMPLETION_MODEL = "step-1-128k"
 #COMPLETION_MODEL = "step-1-256k"
 # COMPLETION_MODEL = "step-1o-vision-32k"
-COMPLETION_MODEL = "step-1o-turbo-vision"
+COMPLETION_MODEL = "step-1o-turbo-vision-new-engine"
 #COMPLETION_MODEL = "step-1v-32k"
 #COMPLETION_MODEL = "step-2-16k-nightly"
 #COMPLETION_MODEL = "step-1x-medium"
