@@ -7,6 +7,7 @@ import os
 import logging
 from pydub import AudioSegment
 
+
 # 配置日志，格式中包含时间戳
 logging.basicConfig(level=logging.INFO,
                     format="%(asctime)s - %(levelname)s - %(message)s")
@@ -30,7 +31,7 @@ STEP_API_KEY, WS_BASE_URL = read_config()
 session_id = ""
 voice_id = "voice-tone-Eog0tIPGwy"  # 克隆的音色
 auth_token = STEP_API_KEY
-ws_url = WS_BASE_URL + "/realtime/audio?model=step-tts-mini"
+ws_url = WS_BASE_URL + "/realtime/audio?model=step-tts-mini-hjzd"
 
 audio_chunks = []
 audio_chunk_files = []
@@ -52,7 +53,7 @@ def send_create(ws):
         "data": {
             "session_id": session_id,
             "voice_id": voice_id,
-            "response_format": "mp3",
+            "response_format": "wav",
             "volumn_ratio": 1.0,
             "speed_ratio": 1.0,
             "sample_rate": 16000,
@@ -74,7 +75,7 @@ def send_text(ws):
         "type": "tts.text.delta",
         "data": {
             "session_id": session_id,
-            "text":"根据一个日本注意!简介为什具有可能;文化程序是否如何影响新闻' 能够自己原因关于注\ 一定重要能力网上资料您的应用新闻~` 一般作为重要发布很多!图片能够合作发表网络信息感觉出现怎么活动已经怎么|中文最后没有其中自己而且. 行业应用情况图片. 他们空间功能浏览具有时间. 留言教育帖子完成网络支持需要. 组织关于科技精华. 网上可能上海搜索. 这里各种发展还有认为. 密码类别情况作者. 研究广告怎么认为部门销售. 文化工作业务日本拥有更多空间显示. 到了这种学校一切."
+            "text":"电影艺术电影《阿甘正传》是一部经典的美国电影，讲述了一个智商不高但心地善良的男人阿甘的传奇人生。影片通过阿甘的视角，展现了美国20世纪下半叶的历史变迁和社会风貌。主演汤姆·汉克斯凭借出色的演技赢得了奥斯卡最佳男主角奖，而电影本身也获得了包括最佳影片在内的六项奥斯卡大奖。这部电影以其深刻的主题、感人的故事和精湛的表演，成为了影史上的不朽之作。"
             # "text": "我在测试新的语音合成，这是我3新建的一个模板，我在这个开场白里面测试，我继续测试，今天是二零二五年五月十三号，我这边写这么长的文字是用来凑字数的，因为太长了，所以要多打点字，是现实想不出多少字了，需要二百左右个字，我这边随便编一下，多写一点，多写一点字数应该就够长了吧，这样好像还不够，我这边再多写一点，写长一点。"
         }
     }
@@ -86,15 +87,23 @@ def send_text(ws):
     logging.info("文本开始发送时间戳: %.3f", text_start_time)
 
 # ---------------------------
-# 辅助函数：保存单个音频片段到文件
+# 保存单个音频片段到文件（自动检测 WAV/MP3）
 # ---------------------------
 def save_chunk_audio(audio_b64, index):
     try:
+        # 修正 Base64 填充
         missing_padding = len(audio_b64) % 4
         if missing_padding:
             audio_b64 += '=' * (4 - missing_padding)
         audio_data = base64.b64decode(audio_b64)
-        chunk_filename = os.path.join(output_dir, f"chunk_{index}.mp3")
+
+        # 根据文件头判断格式
+        if audio_data.startswith(b'RIFF'):
+            ext = 'wav'
+        else:
+            ext = 'mp3'
+
+        chunk_filename = os.path.join(output_dir, f"chunk_{index}.{ext}")
         with open(chunk_filename, "wb") as f:
             f.write(audio_data)
         logging.info("片段 %d 已保存到 %s", index, chunk_filename)
@@ -104,16 +113,27 @@ def save_chunk_audio(audio_b64, index):
         return None
 
 # ---------------------------
-# 辅助函数：合并所有音频片段
+# 合并所有音频片段（支持 WAV & MP3）
 # ---------------------------
 def merge_audio_chunks(chunk_files):
     try:
         combined = AudioSegment.empty()
+        # 按顺序合并
         for file in chunk_files:
-            segment = AudioSegment.from_mp3(file)
+            ext = os.path.splitext(file)[1].lower()
+            if ext == '.wav':
+                segment = AudioSegment.from_wav(file)
+            elif ext == '.mp3':
+                segment = AudioSegment.from_mp3(file)
+            else:
+                # 通用解析，pydub 会尝试根据文件头自动识别
+                segment = AudioSegment.from_file(file)
             combined += segment
-        final_filename = os.path.join(output_dir, "combined_audio.mp3")
-        combined.export(final_filename, format="mp3")
+
+        # 最终输出与首个片段同格式
+        first_ext = os.path.splitext(chunk_files[0])[1].lower().lstrip('.')
+        final_filename = os.path.join(output_dir, f"combined_audio.{first_ext}")
+        combined.export(final_filename, format=first_ext)
         logging.info("所有片段已合并，完整音频保存到 %s", final_filename)
     except Exception as e:
         logging.error("合并音频出错: %s", e)
