@@ -46,9 +46,9 @@ def transcribe_audio(api_url,api_key, AUDIO_FILE_PATH, MODEL, RESPONSE_FORMAT,ST
 if __name__ == "__main__":
     # 从环境变量获取API密钥
     STEP_API_KEY, BASE_URL = read_config()
-    AUDIO_FILE_PATH = "./output/测试音频.mp3"  # 替换为您的音频文件路径
+    AUDIO_FILE_PATH = "./output/王自如独白.MP3"  # 替换为您的音频文件路径
     MODEL = "step-asr"
-    RESPONSE_FORMAT = "json"
+    RESPONSE_FORMAT = "text"
     STREAM = True
     # 调整参数顺序
     transcribe_audio(BASE_URL, STEP_API_KEY, AUDIO_FILE_PATH, MODEL, RESPONSE_FORMAT,STREAM)

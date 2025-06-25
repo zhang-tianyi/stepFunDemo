@@ -81,6 +81,7 @@ messages = [
           {"role": "system", "content": sys_prompt},
           {"role": "user", "content":
               [
+                  {"type": "text", "text": user_prompt},
                   {"type": "image_url", "image_url": {"url": "data:image/jpg;base64,%s" % (bstring1),"detail": "high"}},
                   # {"type": "image_url", "image_url": {"url": "data:image/jpg;base64,%s" % (bstring2)}},
                   # {"type": "image_url", "image_url": {"url": "data:image/png;base64,%s" % (bstring3)}},
@@ -88,7 +89,7 @@ messages = [
                   # {"type": "image_url", "image_url": {"url": "data:image/jpg;base64,%s" % (bstring5),"detail": "high"}},
                   # {"type": "image_url", "image_url": {"url": "data:image/jpg;base64,%s" % (bstring6),"detail": "high"}},
                   # {"type": "text", "text": "请解析图片里包含的信息，包含文字和风格类型等。"}
-                  {"type": "text", "text": user_prompt}
+
               ]
            }
 ]

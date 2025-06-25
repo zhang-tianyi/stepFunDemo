@@ -84,7 +84,7 @@ if __name__ == '__main__':
     """
     user_prompt = "请根据要求分析图片并输出产品信息给我"
 
-    input_path = 'img/guangyun'
+    input_path = 'img/food'
     image_paths = get_image_paths(input_path, max_images=50)
     if not image_paths:
         raise RuntimeError(f"在路径 {input_path} 下未找到任何支持的图片格式。")
