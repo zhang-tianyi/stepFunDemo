@@ -81,7 +81,7 @@ def slice_and_transcribe(
 
 if __name__ == "__main__":
     STEP_API_KEY, BASE_URL = read_config()
-    AUDIO_FILE_PATH = "./output/11.MP3"
+    AUDIO_FILE_PATH = "./output/AK聊小米眼镜.MP3"
     slice_and_transcribe(
         BASE_URL,
         STEP_API_KEY,
@@ -89,5 +89,5 @@ if __name__ == "__main__":
         MODEL="step-asr",
         RESPONSE_FORMAT="text",
         slice_duration_ms=60_000,  # 切片长度：60 秒
-        overlap_ms=500           # 重叠长度：5 秒
+        overlap_ms=200           # 重叠长度：5 秒
     )
