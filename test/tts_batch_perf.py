@@ -22,13 +22,14 @@ MAX_CASES = 20
 def read_config():
     cfg = configparser.ConfigParser()
     cfg.read('../config.ini', encoding='utf-8')
-    key  = cfg.get('step_api_prod', 'key')
-    wsurl= cfg.get('step_api_prod', 'wsurl')
+    key  = cfg.get('step_api_test', 'key')
+    wsurl= cfg.get('step_api_test', 'wsurl')
     return key, wsurl
 
 API_KEY, WS_BASE = read_config()
-VOICE_ID = "voice-tone-Eog0tIPGwy"
-WS_URL   = WS_BASE + "/realtime/audio?model=step-tts-mini"
+# VOICE_ID = "voice-tone-Eog0tIPGwy"
+VOICE_ID = "hejunzongda-1"
+WS_URL   = WS_BASE + "/realtime/audio?model=step-tts-mini-hjzd"
 
 # 读取所有案例
 cases = []

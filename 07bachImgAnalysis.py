@@ -16,8 +16,11 @@ def read_config(config_file='config.ini'):
     print(f"[1] 开始读取配置文件：{config_file}")
     config = configparser.ConfigParser()
     config.read(config_file)
-    api_key = config.get('step_api_prod', 'key')
-    api_url = config.get('step_api_prod', 'url')
+    # api_key = config.get('step_api_prod', 'key')
+    # api_url = config.get('step_api_prod', 'url')
+    api_key = config.get('openai', 'key')
+    api_url = config.get('openai', 'url')
+
     print(f"[2] 读取到 API_KEY 长度 {len(api_key)}，API_URL：{api_url}")
     return api_key, api_url
 
@@ -59,7 +62,8 @@ if __name__ == '__main__':
     start_time = time.time()
     STEP_API_KEY, BASE_URL = read_config()
     client = OpenAI(api_key=STEP_API_KEY, base_url=BASE_URL)
-    MODEL = 'step-1o-turbo-vision'
+    # MODEL = 'step-1o-turbo-vision'
+    MODEL = 'gpt-4o'
 
     sys_prompt = """
 你是一个电商商品信息提取专家。请阅读用户提供的商品促销图片，提取并整理出规范化的商品信息。

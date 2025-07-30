@@ -4,6 +4,8 @@ import base64
 import requests
 import json
 
+# 设置推理格式，可选 "general" 或 "deepseek-style"
+REASONING_FORMAT = "deepseek-style"  # 或者 "deepseek-style"
 
 # 辅助函数：尝试在 buffer 前 width 个字符内找到合适的断行位置
 def flush_reasoning_line(buffer, width=40, threshold=5):
@@ -32,32 +34,28 @@ def flush_reasoning_line(buffer, width=40, threshold=5):
         remaining = buffer[width:]
     return line, remaining
 
-
 # 读取配置文件
 def read_config():
     config = configparser.ConfigParser()
     config.read('../config.ini')
     # 读取 API 配置；测试环境将 step_api_prod 换成 step_api_test 即可
-    api_key = config.get('step_api_prod', 'key')
-    api_url = config.get('step_api_prod', 'url')
+    api_key = config.get('step_api_test', 'key')
+    api_url = config.get('step_api_test', 'url')
     return api_key, api_url
-
 
 STEP_API_KEY, BASE_URL = read_config()
 
 # 选择模型
-COMPLETION_MODEL = "step-r1-v-mini"
+COMPLETION_MODEL = "step-3"
 
 # 用户问题提示
 user_prompt = "帮我看看这是哪里？"
-
 
 # 将本地图片转换为 base64 字符串
 def image_to_base64(image_path):
     with open(image_path, "rb") as image_file:
         encoded_string = base64.b64encode(image_file.read())
     return encoded_string.decode('utf-8')
-
 
 image_path1 = "../img/图1.jpg"
 bstring1 = image_to_base64(image_path1)
@@ -82,7 +80,8 @@ headers = {
 payload = {
     "model": COMPLETION_MODEL,
     "messages": messages,
-    "stream": True
+    "stream": True,
+    "reasoning_format": REASONING_FORMAT  # 新增参数
 }
 
 try:
@@ -123,18 +122,22 @@ try:
                     if data.get("object") == "chat.completion.chunk":
                         delta = data['choices'][0]['delta']
 
-                        # 处理 reasoning 信息，流式输出时尝试按每行40个字符分割
-                        if "reasoning" in delta:
+                        # 根据 reasoning_format 选择字段
+                        if REASONING_FORMAT == "deepseek-style":
+                            reasoning_chunk = delta.get("reasoning_content", "")
+                        else:
                             reasoning_chunk = delta.get("reasoning", "")
-                            if reasoning_chunk:
-                                if not reasoning_header_printed:
-                                    print("\n\n[思考过程]:")
-                                    reasoning_header_printed = True
-                                reasoning_buffer += reasoning_chunk  # 累加，不插入额外空格
-                                while len(reasoning_buffer) >= 40:
-                                    line, reasoning_buffer = flush_reasoning_line(reasoning_buffer, width=40)
-                                    if line:
-                                        print(line)
+
+                        # 处理 reasoning 信息，流式输出时尝试按每行40个字符分割
+                        if reasoning_chunk:
+                            if not reasoning_header_printed:
+                                print("\n\n[思考过程]:")
+                                reasoning_header_printed = True
+                            reasoning_buffer += reasoning_chunk  # 累加，不插入额外空格
+                            while len(reasoning_buffer) >= 40:
+                                line, reasoning_buffer = flush_reasoning_line(reasoning_buffer, width=40)
+                                if line:
+                                    print(line)
 
                         # 获取实际输出的 content 内容并实时打印
                         content = delta.get("content", "")
