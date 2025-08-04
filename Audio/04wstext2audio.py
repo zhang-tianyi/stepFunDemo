@@ -30,7 +30,7 @@ STEP_API_KEY, WS_BASE_URL = read_config()
 session_id = ""
 voice_id = "voice-tone-Eog0tIPGwy"
 auth_token = STEP_API_KEY
-ws_url = WS_BASE_URL + "/realtime/audio?model=step-tts-mini-hjzd"
+ws_url = WS_BASE_URL + "/realtime/audio?model=step-tts-vivid"
 
 audio_chunks = []
 audio_chunk_files = []
@@ -218,7 +218,7 @@ if __name__ == "__main__":
     # 控制文本是否按字符拆分发送
     SPLIT_TEXT = True          # True 按字符拆分，False 不拆分
     # 要合成的文本内容
-    TEXT = "您好，欢迎致"
+    TEXT = "您好，欢迎来到我的家。我爱大家，大家好。"
 
     logging.info("启动 create_mode：%s, split_text：%s", CREATE_MODE, SPLIT_TEXT)
 
