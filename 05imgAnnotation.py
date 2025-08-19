@@ -174,8 +174,8 @@ def annotate_image(image_path, dishes, output_path):
 
 
 def main():
-    input_image_path = "./img/food/菜肴06.jpeg"  # 替换为你的输入图像路径
-    output_image_path = "./img/food/output/菜肴06_标注.jpg"  # 替换为你的输出图像路径
+    input_image_path = "./img/food/food.png"  # 替换为你的输入图像路径
+    output_image_path = "./img/food/output/food_标注.jpg"  # 替换为你的输出图像路径
     max_retries = 5
     attempt = 0
 
