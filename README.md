@@ -1,83 +1,107 @@
-# Introduction
-stepfundemo用于测试stepfun开放平台的api，包括语音、图像、chat、file、知识库等单个功能和各种最佳实践。
-对应：stepfun官方文档 https://platform.stepfun.com/docs/overview/quickstart
+# 简介
+stepfundemo 用于测试 StepFun 开放平台的 API，涵盖语音、图像、聊天、文件、知识库等单个功能及各类最佳实践。
 
-更新时间：20250904
+对应文档：StepFun 官方文档 https://platform.stepfun.com/docs/overview/quickstart
 
-## Installation
-Install all Python modules and packages listed in the requirements.txt file using the below command.
+更新时间：2025年9月10日
 
-```python
+
+
+
+# 前置条件
+
+需拥有 StepFun 开放平台账户。
+
+
+
+# 快速开始准备
+
+## 安装python包
+使用以下命令安装 `requirements.txt` 中列出的所有 Python 模块和包：
+
+```bash
 pip install -r requirements.txt
 ```
 
-## Prerequisites
-stepfun开放平台账户
+## 设置环境变量
 
-### For getting started:
-- Add "STEPFUN_API_KEY" as variable name and \<Your API Key Value\> as variable value in the environment variables.
-<br>
-One can get the STEPFUN_API_KEY value from the https://platform.stepfun.com/interface-key 
- <br>
- Steps to set the key in the environment variables:        
+将你的 API 密钥添加到环境变量中：
 
-      WINDOWS Users: 
-         setx STEPFUN_API_KEY "REPLACE_WITH_YOUR_KEY_VALUE_HERE"
+- **变量名**: `STEPFUN_API_KEY`
+- **变量值**: 你的 API 密钥
 
-      MACOS/LINUX Users: 
-         export STEPFUN_API_KEY="REPLACE_WITH_YOUR_KEY_VALUE_HERE"
+> API 密钥可从 [StepFun 接口密钥管理页面](https://platform.stepfun.com/interface-key) 获取
 
-第一步：确认你的终端 shell
-先确定当前使用的是 bash 还是 zsh（两种 shell 的配置文件不同）：
-在终端输入以下命令，按回车：
+## 环境变量设置步骤
+
+## Windows 用户
+
+在命令提示符或 PowerShell 中执行：
+
+```bash
+setx STEPFUN_API_KEY "你的真实API密钥"
+```
+
+
+## macOS/Linux 用户
+
+### 确认当前使用的 shell
+
 ```bash
 echo $SHELL
 ```
 
-若输出 /bin/bash → 用 bash，配置文件是 ~/.bashrc（Linux）或 ~/.bash_profile（macOS 旧版）。
-若输出 /bin/zsh → 用 zsh（macOS 10.15+ 默认 shell），配置文件是 ~/.zshrc。
-第二步：修改配置文件（以 zsh 为例，最常用）
-以 macOS 默认的 zsh 为例，步骤如下：
-打开配置文件
-在终端输入以下命令，用系统自带的 nano 编辑器打开 ~/.zshrc（简单易操作）：
+- 若输出 `/bin/bash` → 使用 bash，配置文件为 Linux 的 `~/.bashrc` 或 macOS 旧版的 `~/.bash_profile`。
+- 若输出 `/bin/zsh` → 使用 zsh（macOS 10.15+ 默认 shell），配置文件为 `~/.zshrc`。
+
+
+### 以 macOS 常用的 zsh 为例，配置步骤如下：
+#### 打开配置文件：
+在终端输入以下命令，用系统自带的 nano 编辑器打开 `~/.zshrc`：
 ```bash
 nano ~/.zshrc
 ```
-添加环境变量命令
-在打开的 nano 编辑器中，按「下箭头」滑到文件末尾，粘贴以下内容（替换为你的真实密钥）：
-```bash
-# 设置 STEPFUN API 密钥（永久生效）
-export STEPFUN_API_KEY="你的真实API密钥"
-export STEPFUN_ENDPOINT="https://api.stepfun.com/v1"
-export STEPFUN_WSS_ENDPOINT="wss://api.stepfun.com/v1"
-```
 
-注意：密钥前后的引号要保留，且不要有多余空格。
-保存并退出 nano
-按 Control + O（字母 O，不是数字 0）→ 按「回车」确认保存。
-按 Control + X 退出编辑器，回到终端。
-第三步：让配置立即生效（无需重启终端）
-修改配置文件后，需让系统加载新配置，在终端输入以下命令：
-若用 zsh：
-```bash
-source ~/.zshrc
-```
-若用 bash（Linux 或 macOS 旧版）：
-```bash
-source ~/.bashrc  # Linux
-# 或
-source ~/.bash_profile  # macOS 旧版 bash
-```
+### 添加环境变量
+1. 在打开的编辑器中，用方向键滑到文件末尾，粘贴以下内容（需将 `"你的真实API密钥"` 替换为你从 StepFun 平台获取的实际密钥）：
+   ```bash
+   # 设置 STEPFUN API 密钥（永久生效）
+   export STEPFUN_API_KEY="你的真实API密钥"
+   export STEPFUN_ENDPOINT="https://api.stepfun.com/v1"
+   export STEPFUN_WSS_ENDPOINT="wss://api.stepfun.com/v1"
+   ```
 
-第四步：验证永久生效
-关闭当前终端，重新打开一个新终端。
-输入 echo $STEPFUN_API_KEY，若输出你的密钥，说明永久生效（重启电脑后也能正常读取）
 
-## Solutions
-- [**Agent Solutions**]
-- [**Basic Samples**] Small code samples and snippets for integration into your applications.
-- [**Optimal Practice**]: Complete solutions for specific use cases and industry scenarios.
+> 注意：密钥前后的引号需保留，且不要有多余空格。
 
-## Requirements
-Python 3.8+
-Jupyter Notebook 6.5.2
+2. 保存并退出
+按以下步骤操作（以 nano 编辑器为例）：
+- 按 `Control + O`（字母 O，非数字 0）；
+- 按回车键确认保存路径；
+- 按 `Control + X` 退出编辑器。
+
+
+3. 使配置立即生效
+在终端输入以下命令（根据所用 shell 选择对应命令）：
+- 若用 zsh：`source ~/.zshrc`
+- 若用 bash（Linux 或 macOS 旧版）：
+  - Linux 系统：`source ~/.bashrc`
+  - macOS 旧版 bash 系统：`source ~/.bash_profile`
+
+
+### 验证配置
+1. 关闭当前终端，重新打开一个新终端；
+2. 在新终端中输入 `echo $STEPFUN_API_KEY`；
+3. 若输出你的 API 密钥，说明配置已永久生效（重启电脑后仍可正常读取）。
+
+
+### 解决方案
+- [Agent_Solutions]agent应用
+- [Basic_Samples] 用于集成到应用中的小型代码示例和片段。
+- [Optimal_Practice] 针对特定场景和功能的最佳实践。
+
+
+### 环境要求
+- Python 3.8 及以上版本
+- Jupyter Notebook 6.5.2
+
