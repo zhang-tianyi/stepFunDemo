@@ -26,7 +26,7 @@ def image_to_base64(image_path):
     return encoded_string.decode('utf-8')
  
 # 注意提供准确的图片路径
-image_path1 = "./media/鱼香肉丝.jpg"
+image_path1 = "./media/01鱼香肉丝.jpg"
 bstring1 = image_to_base64(image_path1)
 
 # content为multipart消息列表 
