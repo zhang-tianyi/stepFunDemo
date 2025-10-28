@@ -9,30 +9,49 @@ BASE_URL= os.environ['STEPFUN_ENDPOINT']
 
 
 # 模型与推理格式设置
-COMPLETION_MODEL = "step-3"
-REASONING_FORMAT = "deepseek-style"  # 可选 "general" 或 "deepseek-style"
-user_prompt = "帮我看看这是什么菜，如何制作？"
+COMPLETION_MODEL = "step-2-mini"
+# REASONING_FORMAT = "deepseek-style"  # 可选 "general" 或 "deepseek-style"
+user_prompt = "今天上海天气"
 
 # 将本地图片转换为 base64 字符串
 def image_to_base64(image_path):
     with open(image_path, "rb") as image_file:
         return base64.b64encode(image_file.read()).decode('utf-8')
 
-image_path1 = "../img/food/菜肴01.jpeg"
-bstring1 = image_to_base64(image_path1)
+# image_path1 = "../img/food/菜肴01.jpeg"
+# bstring1 = image_to_base64(image_path1)
+
+# tools = [
+#     {
+#         "type": "web_search",# 固定值
+#         "function": {
+#             "description": "这个web_search用来搜索互联网的信息"# 描述什么样的信息需要大模型进行搜索。
+#         }
+#     }
+# ]
+
+tools = [
+    {
+        "type": "function",
+        "function": {
+            "name": "get_weather",
+            "description": "查询天气",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "city": {"type": "string", "description": "城市名称（必须为汉字）"}
+                },
+                "required": ["city"],
+            },
+        },
+    }
+]
 
 # 构造聊天消息
 messages = [
     {
         "role": "user",
         "content": [
-            {
-                "type": "image_url",
-                "image_url": {
-                    "url": f"data:image/png;base64,{bstring1}",
-                    "detail": "high"
-                }
-            },
             {
                 "type": "text",
                 "text": user_prompt
@@ -54,7 +73,10 @@ headers = {
 payload = {
     "model": COMPLETION_MODEL,
     "messages": messages,
-    "reasoning_format": REASONING_FORMAT,
+    # "reasoning_format": REASONING_FORMAT,
+
+    "tool_choice":"auto",
+    "tools":tools,
     "stream": True
 }
 

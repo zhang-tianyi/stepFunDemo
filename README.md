@@ -3,7 +3,7 @@ stepfundemo 用于测试 StepFun 开放平台的 API，涵盖语音、图像、�
 
 对应文档：StepFun 官方文档 https://platform.stepfun.com/docs/overview/quickstart
 
-更新时间：2025年9月10日
+更新时间：2025年10月28日
 
 
 
@@ -17,7 +17,7 @@ stepfundemo 用于测试 StepFun 开放平台的 API，涵盖语音、图像、�
 # 测试内容
 - [Agent_Solutions]agent应用【需要更新】
 - [Basic_Samples] 用于集成到应用中的小型代码示例和片段。【基于欧文的代码样例，已完成】
-- [Optimal_Practice] 针对特定场景和功能的最佳实践。【更新中 3/16】
+- [Optimal_Practice] 针对特定场景和功能的最佳实践。【已完成】
 
 
 

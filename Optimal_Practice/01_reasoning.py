@@ -27,13 +27,14 @@ def image_to_base64(image_path):
  
 # 注意提供准确的图片路径
 image_path1 = "./media/01鱼香肉丝.jpg"
+image_path1="./media/test-监测.png"
 bstring1 = image_to_base64(image_path1)
 
 # content为multipart消息列表 
 sys_prompt = """你是由阶跃星辰提供的AI聊天助手，你擅长中文，英文，以及多种其他语言的对话。在保证用户数据安全的前提下，你能对用户的问题和请求，
 作出快速和精准的回答。同时，你的回答和建议应该拒绝黄赌毒，暴力恐怖主义的内容。
 """
-user_prompt = "帮我看看这是什么菜，如何制作？"
+user_prompt = "分析图片"#"帮我看看这是什么菜，如何制作？"
 messages = [
     {"role": "user", "content": [
         {"type": "image_url", "image_url": {"url": f"data:image/jpg;base64,{bstring1}", "detail": "high"}},

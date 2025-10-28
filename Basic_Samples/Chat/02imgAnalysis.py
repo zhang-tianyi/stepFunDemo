@@ -16,10 +16,10 @@ client = OpenAI(api_key=STEP_API_KEY,base_url=BASE_URL)
 #COMPLETION_MODEL = "step-1-32k"
 #COMPLETION_MODEL = "step-1-128k"
 #COMPLETION_MODEL = "step-1-256k"
-# COMPLETION_MODEL = "step-1o-vision-32k"
-COMPLETION_MODEL = "step-1o-turbo-vision"
+COMPLETION_MODEL = "step-1o-vision-32k"
+# COMPLETION_MODEL = "step-1o-turbo-vision"
+# COMPLETION_MODEL = "step-3"
 #COMPLETION_MODEL = "step-1v-32k"
-#COMPLETION_MODEL = "step-2-16k-nightly"
 #COMPLETION_MODEL = "step-1x-medium"
 
 sys_prompt = """你是由阶跃星辰提供的AI图像分析师，善于图片分析，可以分析图片中的文字，地址，建筑，人物，动物，食物，植物等结构清晰的物品。
@@ -37,33 +37,37 @@ def image_to_base64(image_path):
     with open(image_path, "rb") as image_file:
         encoded_string = base64.b64encode(image_file.read())
     return encoded_string.decode('utf-8')
-#
-image_path1 = "../img/图1.jpg"
-image_path2 = "../img/图2.jpg"
-image_path3 = "../img/图3.png"
+
+# image_path1 = "../img/图1.jpg"
+# image_path2 = "../img/图2.jpg"
+# image_path3 = "../img/图3.png"
 # image_path4 = "img/图4.jpg"
 # image_path5 = "img/图表1.jpg"
-# image_path6 = "img/病例.jpg"
+image_path6 = "./病例.jpeg"
 
-bstring1 = image_to_base64(image_path1)
-bstring2 = image_to_base64(image_path2)
-bstring3 = image_to_base64(image_path3)
+# bstring1 = image_to_base64(image_path1)
+# bstring2 = image_to_base64(image_path2)
+# bstring3 = image_to_base64(image_path3)
 # bstring4 = image_to_base64(image_path4)
 # bstring5 = image_to_base64(image_path5)
-# bstring6 = image_to_base64(image_path6)
+bstring6 = image_to_base64(image_path6)
 
 messages = [
           # {"role": "system", "content": sys_prompt},
-          {"role": "user", "content":
+          {"role": "user", 
+           "temprature": 0,
+           "content":
               [
-                  {"type": "image_url", "image_url": {"url": "data:image/jpg;base64,%s" % (bstring1),"detail": "high"}},
-                  {"type": "image_url", "image_url": {"url": "data:image/jpg;base64,%s" % (bstring2)}},
-                  {"type": "image_url", "image_url": {"url": "data:image/png;base64,%s" % (bstring3)}},
-                  # {"type": "image_url", "image_url": {"url": "data:image/jpg;base64,%s" % (bstring4)}},
-                  # {"type": "image_url", "image_url": {"url": "data:image/jpg;base64,%s" % (bstring5),"detail": "high"}},
-                  # {"type": "image_url", "image_url": {"url": "data:image/jpg;base64,%s" % (bstring6),"detail": "high"}},
-                  # {"type": "text", "text": "请解析图片里包含的信息，包含文字和风格类型等。"}
-                  {"type": "text", "text": user_prompt}
+                #   {"type": "image_url", "image_url": {"url": "data:image/jpg;base64,%s" % (bstring1),"detail": "high"}},
+                #   {"type": "image_url", "image_url": {"url": "data:image/jpg;base64,%s" % (bstring2)}},
+                #   {"type": "image_url", "image_url": {"url": "data:image/png;base64,%s" % (bstring3)}},
+                # {"type": "image_url", "image_url": {"url": "data:image/jpg;base64,%s" % (bstring4)}},
+                # {"type": "image_url", "image_url": {"url": "data:image/jpg;base64,%s" % (bstring5),"detail": "high"}},
+                # {"type": "image_url", "image_url": {"url": "data:image/jpg;base64,%s" % (bstring6),"detail": "high"}},
+                {"type": "image_url", "image_url": {"url": "data:image/jpg;base64,%s" % (bstring6),"detail": "low"}},
+                {"type": "text", "text": "图片分析"}
+                # {"type": "text", "text": "请解析图片里包含的信息，包含文字和风格类型等。"}
+                #   {"type": "text", "text": user_prompt}
               ]
            }
 ]
