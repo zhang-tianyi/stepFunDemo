@@ -24,7 +24,7 @@ BASE_URL= os.environ['STEPFUN_ENDPOINT']
 session_id = ""
 voice_id = "voice-tone-K2CCHn6HjM" #改成自己的音色
 auth_token = STEP_API_KEY
-ws_url = WS_BASE_URL + "/realtime/audio?model=step-tts-vivid"
+ws_url = BASE_URL + "/realtime/audio?model=step-tts-vivid"
 
 audio_chunks = []
 audio_chunk_files = []
